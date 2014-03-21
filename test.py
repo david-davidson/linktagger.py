@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# Ideal command-line syntax? "glt *.txt -backup -rf"
 import fileinput
 import re
 import sys
@@ -7,15 +8,22 @@ import sys
 script = sys.argv[0]
 file = sys.argv[1]
 try:
-	mode = sys.argv[2]
+	backupMode = sys.argv[2]
 except IndexError:
-	mode = "nonrecursive"
-print "Script: " + script
-print "File: " + file
-print "Mode: " + mode
-for line in fileinput.input(file, inplace=1, backup='.backup'): # Only problem: if you do *.html, it treats the second HTML file as sys.argv[2]--that is, as the mode, not a file!
+	backupMode = ""
+print("Script: " + script)
+print("File: " + file)
+print("Backup Mode: " + backupMode)
+if (backupMode == "-backup"):
+	backupMode = ".backup"
+for line in fileinput.input(file, inplace=1, backup=backupMode): # Only problem: if you do *.html, it treats the second HTML file as sys.argv[2]--that is, as the mode, not a file!
     line = re.sub('<a([^>]*)href="([^"\#]*)(\#[^"]*)(\?[^"]*)"','<a\\1href="\\2\\4\\3"', line.rstrip())
-    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)"','<a\\1href="\\2' + glt + '"', line.rstrip()) # <= Works, but ONLY on links w/ section ID
+    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)"','<a\\1href="\\2' + glt + '"', line.rstrip()) # <= Works, but ONLY on links w/o section ID
     line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)#([^\"]*?)"','<a\\1href="\\2' + glt + '#\\3"', line.rstrip()) # <= Works, but ONLY on links w/ section ID
     print(line)
-print "Done!"
+print("Done!")
+
+
+# Could be useful? http://stackoverflow.com/questions/18210968/python-search-through-directory-trees-rename-certain-files
+# Or this? http://stackoverflow.com/questions/1597649/replace-strings-in-files-by-python
+# Again with os.walk(path): http://stackoverflow.com/questions/5817209/browse-files-and-subfolders-in-python
