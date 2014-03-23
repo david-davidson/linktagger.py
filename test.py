@@ -5,6 +5,7 @@ import re
 import sys
 import sys
 import os
+import os.path
 backupmode = ""
 def getparameters(mode):
 	global backupmode
@@ -19,20 +20,30 @@ for word in sys.argv:
 	if word[0] == "-": # Handle parameters preceded by a hyphen
 		getparameters(word)
 		word = None
+	elif word[0] == "\*":
+		getparameters(word)
+		word = None
 	if word == __file__: # Remove the script name itself
 		word = None
 	if word is not None:
 		files.append(word)
-#print(files)
-for line in fileinput.input(files, inplace=1, backup=backupmode): # Only problem: if you do *.html, it treats the second HTML file as sys.argv[2]--that is, as the mode, not a file!
-    line = re.sub('<a([^>]*)href="([^"\#]*)(\#[^"]*)(\?[^"]*)"','<a\\1href="\\2\\4\\3"', line.rstrip()) # Put section IDs at the end
-    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)"','<a\\1href="\\2?' + glt + '"', line.rstrip()) # <= Tag links without any section ID
-    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)#([^\"]*?)"','<a\\1href="\\2?' + glt + '#\\3"', line.rstrip()) # <= Tag links with section ID, before the ID
-    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)(\?(?![^#"]*?utm_)[^#"]*?)"','<a\\1href="\\2\\3&' + glt + '"', line.rstrip()) # <= Tag links with other parameters (but no GLT) and no section ID
-    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)(\?(?!.*?utm_).*?)(#*[^#"]*)"','<a\\1href="\\2\\3&' + glt + '\\4"', line.rstrip()) # <= Tag links with other parameters (but no GLT) and a section ID at the end
-    line = re.sub('<a([^>]*)href="([^"]*http[^"]*?[^"]*)">','<a\\1href="\\2" target="_blank">', line.rstrip()) # Append target="_blank"
-    print(line)
-print("Done!")
+for word in files:
+	if os.path.isfile(word) is not True:
+		print("LOL WUT "+ word + " is not a file")
+		files.remove(word)
+length = len(files)
+if len(files) is 0:
+	print("No files to tag!")
+else:
+	for line in fileinput.input(files, inplace=1, backup=backupmode): # Only problem: if you do *.html, it treats the second HTML file as sys.argv[2]--that is, as the mode, not a file!
+	    line = re.sub('<a([^>]*)href="([^"\#]*)(\#[^"]*)(\?[^"]*)"','<a\\1href="\\2\\4\\3"', line.rstrip()) # Put section IDs at the end
+	    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)"','<a\\1href="\\2?' + glt + '"', line.rstrip()) # <= Tag links without any section ID
+	    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)#([^\"]*?)"','<a\\1href="\\2?' + glt + '#\\3"', line.rstrip()) # <= Tag links with section ID, before the ID
+	    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)(\?(?![^#"]*?utm_)[^#"]*?)"','<a\\1href="\\2\\3&' + glt + '"', line.rstrip()) # <= Tag links with other parameters (but no GLT) and no section ID
+	    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)(\?(?!.*?utm_).*?)(#*[^#"]*)"','<a\\1href="\\2\\3&' + glt + '\\4"', line.rstrip()) # <= Tag links with other parameters (but no GLT) and a section ID at the end
+	    line = re.sub('<a([^>]*)href="([^"]*http[^"]*?[^"]*)">','<a\\1href="\\2" target="_blank">', line.rstrip()) # Append target="_blank"
+	    print(line)
+	print("Done!")
 #print(os.path.basename(__file__))
 #person = input('Enter your name: ')
 #print('Hello', person)
