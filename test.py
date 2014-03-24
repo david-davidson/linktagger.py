@@ -1,44 +1,43 @@
 #!/usr/bin/python3
-# ^ Note "python3", not "python", because Cygwin installs both. You may not need to do this--run "python -V"; if your version is 3+, you can just set the location to /python
+# ^ Note "python3", not "python", because Cygwin currently installs both. You may not need to do this--run "python -V"; if your version is 3+, you can just set the location to /python
 # Ideal command-line syntax? "glt *.txt -backup -rf"
-import fileinput
-import re
-import sys
-import sys
-import os
-import os.path
-import glob
+
+import fileinput, re, sys, os, os.path, glob
+# import re
+# import sys
+# import sys
+# import os
+# import os.path
+# import glob
 
 #Set initial variables
 backupmode = ""
 filestotag = []
-glt = "utm_source=test&utm_medium=test&utm_content=test&utm_campaign=test"
+recursivefiles = []
+recursion = False
 
 # Interpret command-line parameters
 def getparameters(mode):
 	global backupmode
+	global recursion
+	global removeglt
 	if mode == "-rf":
-		print("Mode: recursive!")
+		recursion = True
 	if mode == "-backup":
 		backupmode = ".backup"
+	if mode == "-strip":
+		removeglt = True
 
-# Parse command-line input
-# We no longer need this
-def process(word):
-	global filestotag
-	word = word.replace("\"\"", "")
-	if word != None and word[0] == "-": # Handle parameters preceded by a hyphen
-		getparameters(word)
-		word = None
-	if word != None and word.find("*") != -1:
-		for file in glob.glob(word):
-			process(file) # Expand wildcards, and shoot individual files right back into process()
-		word = None
-	if word != None and word == __file__: # Remove the script name itself
-		word = None
-	if word != None:
-		filestotag.append(word)
-	return word
+
+allfiles = []
+recursivefiles = []
+for root, dirs, files in os.walk("."):
+	for name in files:
+		allfiles.append(name)
+# print(allfiles)
+recursivefilestotag = [os.path.join(root, name)
+    for root, dirs, filestotag in os.walk(".")
+        for name in filestotag]
 
 # Begin script
 for word in sys.argv:
@@ -46,9 +45,16 @@ for word in sys.argv:
 	if word != __file__: # Don't include the script's own name
 		filestotag.append(word)
 for file in filestotag:
-	if file[0] == "-": # Remove, interpret parameters preceded by a hyphen
+	if file[0] == "-": # Remove and interpret parameters preceded by a hyphen
 		filestotag.remove(file)
 		getparameters(file)
+if recursion == True:
+	for file in filestotag:
+		for expandedfile in glob.glob(file):
+			for word in recursivefilestotag:
+				if word.endswith(expandedfile):
+					print("r: ", word) # This works! Now how to add to list without infinite loop?
+					recursivefiles.append(word)
 for file in filestotag:
 	if file.find("*") != -1: # Expand wilcards
 		filestotag.remove(file)
@@ -60,18 +66,17 @@ for file in filestotag:
 		filestotag.remove(file)
 	if file.endswith(".backup"):
 		filestotag.remove(file)
+print("Recursive!", recursivefiles)
 if len(filestotag) is 0:
 	print("No files to tag!")
 else:
-	person = input('Enter your name: ')
-	print('Hello', person)
-	source = input('Enter source: ')
-	print(source)
-	medium = input('Enter medium: ')
-	content = input('Enter content: ')
-	campaign = input('Enter campaign: ')
-	glt = 'utm_source=' + source + '&utm_medium=' + medium + '&utm_content=' + content + '&utm_campaign=' + campaign
-	print(glt)
+	# source = input("Enter source: ")
+	# medium = input("Enter medium: ")
+	# content = input("Enter content: ")
+	# campaign = input("Enter campaign: ")
+	# glt = "utm_source=" + source + "&utm_medium=" + medium + "&utm_content=" + content + "&utm_campaign=" + campaign
+	# print(glt) # For now
+	glt = "temp" # Remove
 	for file in filestotag:
 		print(file)
 	for line in fileinput.input(filestotag, inplace=1, backup=backupmode):
@@ -83,12 +88,27 @@ else:
 	    line = re.sub('<a([^>]*)href="([^"]*http[^"]*?[^"]*)">','<a\\1href="\\2" target="_blank">', line.rstrip()) # Append target="_blank"
 	    print(line) # Writes directly to the file
 	print("Done!")
+# print("Testing")
+# allfiles =[]
+# for root, dirs, files in os.walk("."):
+# 	for name in files:
+# 		allfiles.append(name)
+# print(allfiles)
+# Use scenarios for recursive tagging:
+# tag -rf index.html (every index.html in every directory)
+# tag -rf *.* (every file in every directory)
+# recursivefiles = [os.path.join(root, name)
+#     for root, dirs, files in os.walk(".")
+#         for name in files
+#             if name.endswith((".html"))]
+# for name in recursivefiles:
+# 	print(name)
 #print(os.path.basename(__file__))
 #person = input('Enter your name: ')
 #print('Hello', person)
 # type = sys.argv[1]
 # backupMode = ".backup"
-# allfilestotag = [os.path.join(root, name)
+# recursivefilestotag = [os.path.join(root, name)
 #     for root, dirs, filestotag in os.walk(".")
 #         for name in filestotag
 #             if name.endswith(("." + type))]
