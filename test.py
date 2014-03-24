@@ -1,16 +1,19 @@
 #!/usr/bin/python3
 # ^ Note "python3", not "python", because Cygwin currently installs both. You may not need to do this--run "python -V"; if your version is 3+, you can just set the location to /python
-# Ideal command-line syntax? "glt *.txt -backup -rf"
 
-import fileinput, re, sys, os, os.path, glob
+import fileinput, re, sys, os, os.path, glob, fnmatch
 
 #Set initial variables
-backupmode = ""
-filestotag = []
-recursivefiles = []
+allfilesintree = [os.path.join(root, name)
+    for root, dirs, files in os.walk(".")
+	for name in files]
+backupmode = "" # none
 recursion = False
+removeglt = False
+filestotag = []
+matches = []
 
-# Interpret command-line parameters
+# Interpret parameters
 def getparameters(mode):
 	global backupmode
 	global recursion
@@ -22,32 +25,29 @@ def getparameters(mode):
 	if mode == "-strip":
 		removeglt = True
 
-allfilesintree = [os.path.join(root, name)
-    for root, dirs, filestotag in os.walk(".")
-	for name in filestotag]
-
 # Begin script
 for word in sys.argv:
 	word = word.replace("\"\"", "")
 	if word != __file__: # Don't include the script's own name
 		filestotag.append(word)
 for file in filestotag:
-	if file[0] == "-": # Remove and interpret parameters preceded by a hyphen
-		filestotag.remove(file)
+	if file[0] == "-": # Interpret parameters preceded by a hyphen, and...
 		getparameters(file)
+for file in filestotag: 
+	if file[0] == "-": # ...remove those parameters in a separate loop: otherwise, removing them shifts the count one over and allows the next parameter to be overlooked
+		filestotag.remove(file)
 if recursion == True:
 	for file in filestotag:
-		for expandedfile in glob.glob(file):
-			for word in allfilesintree:
-				if word.endswith(expandedfile):
-					recursivefiles.append(word)
-	filestotag = recursivefiles
-for file in filestotag:
-	if file.find("*") != -1: # Expand wilcards
-		filestotag.remove(file)
-		for expandedfile in glob.glob(file):
-			filestotag.append(expandedfile) # Shoot expanded files into the list
-#print("Recursive!", recursivefiles)
+		for root, dirnames, filenames in os.walk('.'):
+			for filename in fnmatch.filter(filenames, file):
+				matches.append(os.path.join(root, filename))
+	filestotag = matches
+else:
+	for file in filestotag:
+		if file.find("*") != -1: # Expand wilcards; this won't fire with -rf, though, because there'll be no asterisks left to expand
+			filestotag.remove(file)
+			for expandedfile in glob.glob(file):
+				filestotag.append(expandedfile) # Shoot expanded files into the list
 for file in filestotag:
 	if os.path.isfile(file) is not True:
 		print("LOL WUT \""+ file + "\" is not a file")
