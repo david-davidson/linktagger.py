@@ -4,38 +4,38 @@
 import fileinput, re, sys, os, os.path, glob, fnmatch
 
 #Set initial variables
-allfilesintree = [os.path.join(root, name)
-    for root, dirs, files in os.walk(".")
-	for name in files]
 filestotag = []
-matches = []
+recursivematches = []
 backupmode = "" # none
 recursion = False
 removeglt = False
 
 
 # Interpret parameters
-def getparameters(mode):
-	global backupmode
+def interpretparameter(mode):
 	global recursion
+	global backupmode
 	global removeglt
 	if mode == "-rf":
 		recursion = True
 	if mode == "-backup":
-		print("made it this far!")
 		backupmode = ".backup"
 	if mode == "-strip":
 		removeglt = True
 
+def checkparameters(filestotag):
+	for file in filestotag:
+		if file[0] == "-": # Interpret parameters preceded by a hyphen, and...
+			interpretparameter(file)
+			filestotag.remove(file) # <= N2S: Add recursive global function
+			checkparameters(filestotag)
+
 # Begin script
 for word in sys.argv:
-	word = word.replace("\"\"", "")
-	if word != __file__: # Don't include the script's own name
-		filestotag.append(word)
-for file in filestotag:
-	if file[0] == "-": # Interpret parameters preceded by a hyphen, and...
-		getparameters(file)
-		filestotag.remove(file) # <= N2S: Add recursive global function
+	word = word.replace("\"\"", "") # We ask for quotation marks only to prevent the shell from expanding wildcards; we can remove them right
+	if word != __file__: # Don't try to tag the script itself :)
+		filestotag.append(word) # Create initial list of arguments
+checkparameters(filestotag)
 if recursion == True:
 	for file in filestotag:
 		if file.find("/") != -1:
@@ -43,19 +43,17 @@ if recursion == True:
 			file = head[1]
 			head = head[0]
 			path = head + "/"
-			print("head", head)
 		elif file.find("\\") != -1:
 			head = file.rsplit("\\", 1)
 			file = head[1]
 			head = head[0]
 			path = head + "\\"
-			print("head", head)
 		else:
 			path = "."
 		for root, dirnames, filenames in os.walk(path):
 			for filename in fnmatch.filter(filenames, file):
-				matches.append(os.path.join(root, filename))
-	filestotag = matches
+				recursivematches.append(os.path.join(root, filename))
+	filestotag = recursivematches
 for file in filestotag:
 	if file.find("*") != -1: # Expand wilcards, but only in current working directory
 		filestotag.remove(file)
