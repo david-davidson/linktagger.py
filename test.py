@@ -7,11 +7,12 @@ import fileinput, re, sys, os, os.path, glob, fnmatch
 allfilesintree = [os.path.join(root, name)
     for root, dirs, files in os.walk(".")
 	for name in files]
+filestotag = []
+matches = []
 backupmode = "" # none
 recursion = False
 removeglt = False
-filestotag = []
-matches = []
+
 
 # Interpret parameters
 def getparameters(mode):
@@ -21,6 +22,7 @@ def getparameters(mode):
 	if mode == "-rf":
 		recursion = True
 	if mode == "-backup":
+		print("made it this far!")
 		backupmode = ".backup"
 	if mode == "-strip":
 		removeglt = True
@@ -33,21 +35,32 @@ for word in sys.argv:
 for file in filestotag:
 	if file[0] == "-": # Interpret parameters preceded by a hyphen, and...
 		getparameters(file)
-for file in filestotag: 
-	if file[0] == "-": # ...remove those parameters in a separate loop: otherwise, removing them shifts the count one over and allows the next parameter to be overlooked
-		filestotag.remove(file)
+		filestotag.remove(file) # <= N2S: Add recursive global function
 if recursion == True:
 	for file in filestotag:
-		for root, dirnames, filenames in os.walk('.'):
+		if file.find("/") != -1:
+			head = file.rsplit("/", 1)
+			file = head[1]
+			head = head[0]
+			path = head + "/"
+			print("head", head)
+		elif file.find("\\") != -1:
+			head = file.rsplit("\\", 1)
+			file = head[1]
+			head = head[0]
+			path = head + "\\"
+			print("head", head)
+		else:
+			path = "."
+		for root, dirnames, filenames in os.walk(path):
 			for filename in fnmatch.filter(filenames, file):
 				matches.append(os.path.join(root, filename))
 	filestotag = matches
-else:
-	for file in filestotag:
-		if file.find("*") != -1: # Expand wilcards; this won't fire with -rf, though, because there'll be no asterisks left to expand
-			filestotag.remove(file)
-			for expandedfile in glob.glob(file):
-				filestotag.append(expandedfile) # Shoot expanded files into the list
+for file in filestotag:
+	if file.find("*") != -1: # Expand wilcards, but only in current working directory
+		filestotag.remove(file)
+		for expandedfile in glob.glob(file):
+			filestotag.append(expandedfile) # Shoot expanded files into the list
 for file in filestotag:
 	if os.path.isfile(file) is not True:
 		print("LOL WUT \""+ file + "\" is not a file")
