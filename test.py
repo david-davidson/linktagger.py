@@ -3,12 +3,6 @@
 # Ideal command-line syntax? "glt *.txt -backup -rf"
 
 import fileinput, re, sys, os, os.path, glob
-# import re
-# import sys
-# import sys
-# import os
-# import os.path
-# import glob
 
 #Set initial variables
 backupmode = ""
@@ -28,16 +22,9 @@ def getparameters(mode):
 	if mode == "-strip":
 		removeglt = True
 
-
-allfiles = []
-recursivefiles = []
-for root, dirs, files in os.walk("."):
-	for name in files:
-		allfiles.append(name)
-# print(allfiles)
-recursivefilestotag = [os.path.join(root, name)
+allfilesintree = [os.path.join(root, name)
     for root, dirs, filestotag in os.walk(".")
-        for name in filestotag]
+	for name in filestotag]
 
 # Begin script
 for word in sys.argv:
@@ -51,22 +38,22 @@ for file in filestotag:
 if recursion == True:
 	for file in filestotag:
 		for expandedfile in glob.glob(file):
-			for word in recursivefilestotag:
+			for word in allfilesintree:
 				if word.endswith(expandedfile):
-					print("r: ", word) # This works! Now how to add to list without infinite loop?
 					recursivefiles.append(word)
+	filestotag = recursivefiles
 for file in filestotag:
 	if file.find("*") != -1: # Expand wilcards
 		filestotag.remove(file)
 		for expandedfile in glob.glob(file):
 			filestotag.append(expandedfile) # Shoot expanded files into the list
+#print("Recursive!", recursivefiles)
 for file in filestotag:
 	if os.path.isfile(file) is not True:
 		print("LOL WUT \""+ file + "\" is not a file")
 		filestotag.remove(file)
 	if file.endswith(".backup"):
 		filestotag.remove(file)
-print("Recursive!", recursivefiles)
 if len(filestotag) is 0:
 	print("No files to tag!")
 else:
@@ -108,7 +95,7 @@ else:
 #print('Hello', person)
 # type = sys.argv[1]
 # backupMode = ".backup"
-# recursivefilestotag = [os.path.join(root, name)
+# allfilesintree = [os.path.join(root, name)
 #     for root, dirs, filestotag in os.walk(".")
 #         for name in filestotag
 #             if name.endswith(("." + type))]
