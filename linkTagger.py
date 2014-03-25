@@ -81,13 +81,13 @@ sanitize(filestotag)
 if len(filestotag) is 0:
 	print("No files to tag!")
 else:
-	type=input("Type e to paste in existing GLT, or n to build new GLT: ")
-	if type == "e" or type == "E":
+	glttype=input("gltType e to paste in existing GLT, or n to build new GLT: ")
+	if glttype == "e" or glttype == "E":
 		tagging = True
 		glt = input("Right-click and paste in GLT: ")
-		if glt[0] == "?":
+		if glt[0] == "?": # If there's a leading question mark, trim it
 			glt = glt[1:]
-	elif type == "n" or type == "N":
+	elif glttype == "n" or glttype == "N":
 		tagging = True
 		source = input("Enter source: ")
 		medium = input("Enter medium: ")
@@ -105,7 +105,7 @@ else:
 		    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)(\?(?![^#"]*?utm_)[^#"]*?)"','<a\\1href="\\2\\3&' + glt + '"', line.rstrip()) # Tag links with other parameters (but no GLT) and no section ID
 		    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)(\?(?!.*?utm_).*?)(#*[^#"]*)"','<a\\1href="\\2\\3&' + glt + '\\4"', line.rstrip()) # Tag links with other parameters (but no GLT) and a section ID at the end
 	    else:
-    		line = re.sub('','', line.rstrip()) # If we don't use the line.rstrip(), we'll add a ton of new lines!
+    		line = line.rstrip()) # If we don't use the line.rstrip(), we'll add a ton of new lines!
 	    if addtargetblank == "y" or addtargetblank == "Y":
 		    line = re.sub('<a([^>]*)href="([^"]*http[^"]*?[^"]*)">','<a\\1href="\\2" target="_blank">', line.rstrip()) # Append target="_blank"
 	    print(line) # Writes directly to the file
