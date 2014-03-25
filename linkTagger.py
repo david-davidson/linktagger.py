@@ -57,43 +57,51 @@ def expandwildcards(filestotag):
 			wildcardmatches.append(expandedfile) # Shoot expanded files into the list
 	return wildcardmatches
 
+def checkencoding(filestotag):
+	newfiles = []
+	for currentword in filestotag:
+		try:
+			f = codecs.open(currentword, encoding="utf-8", errors="strict")
+			for line in f:
+				pass
+			f.close
+			try:
+				f = codecs.open(currentword, encoding="windows-1252", errors="strict")
+				for line in f:
+					pass
+				f.close
+				newfiles.append(currentword)
+			except UnicodeDecodeError:
+				print("Skipping " + currentword + " because it's not Win-1252")
+		except UnicodeDecodeError:
+			print("Skipping " + currentword + " because it's not UTF-8")
+	return newfiles
+
 def sanitize(filestotag):
-	for file in filestotag:
-		try:
-			f = codecs.open(file, encoding="utf-8", errors="strict")
-			for line in f:
-				pass
-		except UnicodeDecodeError:
-			print("Skipping " + file + " because it's not UTF-8")
-			filestotag.remove(file)
-			sanitize(filestotag)
-		try:
-			f = codecs.open(file, encoding="windows-1252", errors="strict")
-			for line in f:
-				pass
-		except UnicodeDecodeError:
-			print("Skipping " + file + " because it's not Win-1252")
-			filestotag.remove(file)
-			sanitize(filestotag)
-		if os.access(file, os.W_OK) is not True:
-			print("We can't write to \""+ file + "\", we'll skip it.")
-			filestotag.remove(file)
-			sanitize(filestotag)
-		if file.endswith(".backup"):
-			filestotag.remove(file)
-			sanitize(filestotag)
+	newfiles = []
+	for currentword in filestotag:
+		if os.access(currentword, os.W_OK) is True:
+			if os.access(currentword, os.R_OK) is True:
+				if currentword.endswith(".backup") is False:
+					newfiles.append(currentword)
+			else:
+				print("Skipping ", currentword, ": can't read from it")
+		else:
+			print("Skipping ", currentword, ": can't write to it")
+	return newfiles
 
 # Begin user interaction
 for word in sys.argv:
 	word = word.replace("\"\"", "") # The only reason we would need quotation marks is to prevent the shell from pre-expanding wildcards; let's remove them right away
 	if word != __file__: # Don't try to tag the script itself :)
-		filestotag.append(word) # Create initial list of arguments
+		filestotag.append(word) #cat Create initial list of arguments
 checkparameters(filestotag) # Remove and interpret arguments preceded by "-"
 if recursion == True:
 	filestotag = expandrecursively(filestotag)
 else:
 	filestotag = expandwildcards(filestotag)
-sanitize(filestotag)
+filestotag = checkencoding(filestotag)
+filestotag = sanitize(filestotag)
 if len(filestotag) is 0:
 	print("No files to tag!")
 else:
