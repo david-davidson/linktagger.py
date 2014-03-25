@@ -25,7 +25,7 @@ def interpretparameter(mode):
 
 def checkparameters(filestotag):
 	for file in filestotag:
-		if file[0] == "-": 
+		if file[0] == "-":
 			interpretparameter(file) # Interpret arguments preceded by a hyphen
 			filestotag.remove(file) # Remove them; they're not files
 			checkparameters(filestotag) # Start from the top, since we can't just iterate over the rest of the list. (All the remaining files have shifted one to the left, so we would skip one.)
