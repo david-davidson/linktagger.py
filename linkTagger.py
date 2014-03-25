@@ -67,7 +67,7 @@ def sanitize(filestotag):
 			filestotag.remove(file)
 			sanitize(filestotag)
 
-# BEGIN USER INTERACTION
+# Begin user interaction
 for word in sys.argv:
 	word = word.replace("\"\"", "") # The only reason we would need quotation marks is to prevent the shell from expanding wildcards; let's remove them right away
 	if word != __file__: # Don't try to tag the script itself :)
