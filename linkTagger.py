@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # ^ Note "python3", not "python", because Cygwin currently installs both. You may not need to do this--run "python -V"; if your version is 3+, you can just set the location to /python
 
-import fileinput, re, sys, os, os.path, glob, fnmatch
+import fileinput, re, sys, os, os.path, glob, fnmatch, codecs
 
 #Set initial variables
 filestotag = []
@@ -59,8 +59,24 @@ def expandwildcards(filestotag):
 
 def sanitize(filestotag):
 	for file in filestotag:
-		if os.path.isfile(file) is not True:
-			print("LOL WUT \""+ file + "\" is not a file")
+		try:
+			f = codecs.open(file, encoding="utf-8", errors="strict")
+			for line in f:
+				pass
+		except UnicodeDecodeError:
+			print("Skipping " + file + " because it's not UTF-8")
+			filestotag.remove(file)
+			sanitize(filestotag)
+		try:
+			f = codecs.open(file, encoding="windows-1252", errors="strict")
+			for line in f:
+				pass
+		except UnicodeDecodeError:
+			print("Skipping " + file + " because it's not Win-1252")
+			filestotag.remove(file)
+			sanitize(filestotag)
+		if os.access(file, os.W_OK) is not True:
+			print("We can't write to \""+ file + "\", we'll skip it.")
 			filestotag.remove(file)
 			sanitize(filestotag)
 		if file.endswith(".backup"):
@@ -69,7 +85,7 @@ def sanitize(filestotag):
 
 # Begin user interaction
 for word in sys.argv:
-	word = word.replace("\"\"", "") # The only reason we would need quotation marks is to prevent the shell from expanding wildcards; let's remove them right away
+	word = word.replace("\"\"", "") # The only reason we would need quotation marks is to prevent the shell from pre-expanding wildcards; let's remove them right away
 	if word != __file__: # Don't try to tag the script itself :)
 		filestotag.append(word) # Create initial list of arguments
 checkparameters(filestotag) # Remove and interpret arguments preceded by "-"
@@ -81,20 +97,22 @@ sanitize(filestotag)
 if len(filestotag) is 0:
 	print("No files to tag!")
 else:
-	glttype=input("gltType e to paste in existing GLT, or n to build new GLT: ")
-	if glttype == "e" or glttype == "E":
+	type=input("Type e to paste in existing GLT, or n to build new GLT: ")
+	if type == "e" or type == "E":
 		tagging = True
 		glt = input("Right-click and paste in GLT: ")
 		if glt[0] == "?": # If there's a leading question mark, trim it
 			glt = glt[1:]
-	elif glttype == "n" or glttype == "N":
+	elif type == "n" or type == "N":
 		tagging = True
 		source = input("Enter source: ")
 		medium = input("Enter medium: ")
 		content = input("Enter content: ")
 		campaign = input("Enter campaign: ")
-		glt = "utm_source=" + source + "&utm_medium=" + medium + "&utm_content=" + content + "&utm_campaign=" + campaign	
+		glt = "utm_source=" + source + "&utm_medium=" + medium + "&utm_content=" + content + "&utm_campaign=" + campaign
+		glt = glt.lower()
 	addtargetblank = input("Add target=\"_blank\"? y/n: ")
+	print("Scanning files: hold on a sec!")
 	for line in fileinput.input(filestotag, inplace=1, backup=backupmode):
 	    if removeglt == True:
 	    	line = re.sub('[\?|\&]utm_[^?#"]*','', line.rstrip())
@@ -105,10 +123,10 @@ else:
 		    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)(\?(?![^#"]*?utm_)[^#"]*?)"','<a\\1href="\\2\\3&' + glt + '"', line.rstrip()) # Tag links with other parameters (but no GLT) and no section ID
 		    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)(\?(?!.*?utm_).*?)(#*[^#"]*)"','<a\\1href="\\2\\3&' + glt + '\\4"', line.rstrip()) # Tag links with other parameters (but no GLT) and a section ID at the end
 	    else:
-    		line = line.rstrip()) # If we don't use the line.rstrip(), we'll add a ton of new lines!
+    		line = line.rstrip() # If we don't use the rstrip(), we'll add a ton of new lines!
 	    if addtargetblank == "y" or addtargetblank == "Y":
 		    line = re.sub('<a([^>]*)href="([^"]*http[^"]*?[^"]*)">','<a\\1href="\\2" target="_blank">', line.rstrip()) # Append target="_blank"
 	    print(line) # Writes directly to the file
 	for file in filestotag:
-		print("Edited: ", file)
+		print("Scanned: ", file)
 	print("Done!")
