@@ -86,7 +86,7 @@ def sanitize(filestotag):
 		if os.access(file, os.W_OK) is True:
 			if os.access(file, os.R_OK) is True:
 				if file.endswith(".backup") is False:
-					if file.find(__file__) == -1:
+					if file.find(me) == -1:
 						newfiles.append(file)
 			else:
 				print("Skipping ", file, ": can't read from it")
