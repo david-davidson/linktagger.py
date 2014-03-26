@@ -10,6 +10,7 @@ recursion = False
 removeglt = False
 tagging = False
 path = "."
+me = "linktagger.py"
 
 # Interpret parameters
 def interpretparameter(mode):
@@ -46,6 +47,8 @@ def expandrecursively(filestotag):
 		elif file.find("\\") != -1:
 			file = split(file, "\\") # Then if "\" in path
 		for root, dirnames, filenames in os.walk(path):
+			filenames = [f for f in filenames if not f[0] == '.']
+			dirnames[:] = [d for d in dirnames if not d[0] == '.']
 			for filename in fnmatch.filter(filenames, file):
 				recursivematches.append(os.path.join(root, filename))
 	return recursivematches
@@ -59,49 +62,50 @@ def expandwildcards(filestotag):
 
 def checkencoding(filestotag):
 	newfiles = []
-	for currentword in filestotag:
+	for file in filestotag:
 		try:
-			f = codecs.open(currentword, encoding="utf-8", errors="strict")
+			f = codecs.open(file, encoding="utf-8", errors="strict")
 			for line in f:
 				pass
 			f.close
 			try:
-				f = codecs.open(currentword, encoding="windows-1252", errors="strict")
+				f = codecs.open(file, encoding="windows-1252", errors="strict")
 				for line in f:
 					pass
 				f.close
-				newfiles.append(currentword)
+				newfiles.append(file)
 			except UnicodeDecodeError:
-				print("Skipping " + currentword + " because it's not Win-1252")
+				print("Skipping " + file + " because it's not Win-1252")
 		except UnicodeDecodeError:
-			print("Skipping " + currentword + " because it's not UTF-8")
+			print("Skipping " + file + " because it's not UTF-8")
 	return newfiles
 
 def sanitize(filestotag):
 	newfiles = []
-	for currentword in filestotag:
-		if os.access(currentword, os.W_OK) is True:
-			if os.access(currentword, os.R_OK) is True:
-				if currentword.endswith(".backup") is False:
-					newfiles.append(currentword)
+	for file in filestotag:
+		if os.access(file, os.W_OK) is True:
+			if os.access(file, os.R_OK) is True:
+				if file.endswith(".backup") is False:
+					if file.find(__file__) == -1:
+						newfiles.append(file)
 			else:
-				print("Skipping ", currentword, ": can't read from it")
+				print("Skipping ", file, ": can't read from it")
 		else:
-			print("Skipping ", currentword, ": can't write to it")
+			print("Skipping ", file, ": can't write to it")
 	return newfiles
 
 # Begin user interaction
 for word in sys.argv:
-	word = word.replace("\"\"", "") # The only reason we would need quotation marks is to prevent the shell from pre-expanding wildcards; let's remove them right away
+	word = word.replace("\"\"", "") # Remove quotation marks, which we only needed to prevent the shell from expanding wildcards
 	if word != __file__: # Don't try to tag the script itself :)
-		filestotag.append(word) #cat Create initial list of arguments
+		filestotag.append(word) # Create initial list of arguments
 checkparameters(filestotag) # Remove and interpret arguments preceded by "-"
 if recursion == True:
 	filestotag = expandrecursively(filestotag)
 else:
 	filestotag = expandwildcards(filestotag)
-filestotag = checkencoding(filestotag)
 filestotag = sanitize(filestotag)
+filestotag = checkencoding(filestotag)
 if len(filestotag) is 0:
 	print("No files to tag!")
 else:
@@ -122,10 +126,10 @@ else:
 	addtargetblank = input("Add target=\"_blank\"? y/n: ")
 	print("Scanning files: hold on a sec!")
 	for line in fileinput.input(filestotag, inplace=1, backup=backupmode):
+	    line = re.sub('<a([^>]*)href="([^"\#]*)(\#[^"]*)(\?[^"]*)"','<a\\1href="\\2\\4\\3"', line.rstrip()) # Put section IDs at the end
 	    if removeglt == True:
 	    	line = re.sub('[\?|\&]utm_[^?#"]*','', line.rstrip())
 	    if tagging == True:
-		    line = re.sub('<a([^>]*)href="([^"\#]*)(\#[^"]*)(\?[^"]*)"','<a\\1href="\\2\\4\\3"', line.rstrip()) # Put section IDs at the end
 		    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)"','<a\\1href="\\2?' + glt + '"', line.rstrip()) # Tag links without any section ID
 		    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)#([^\"]*?)"','<a\\1href="\\2?' + glt + '#\\3"', line.rstrip()) # Tag links with section ID, before the ID
 		    line = re.sub('<a([^>]*)href="([^"]*http[^#?"]*?)(\?(?![^#"]*?utm_)[^#"]*?)"','<a\\1href="\\2\\3&' + glt + '"', line.rstrip()) # Tag links with other parameters (but no GLT) and no section ID
