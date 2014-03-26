@@ -62,22 +62,30 @@ def expandwildcards(filestotag):
 
 def checkencoding(filestotag):
 	newfiles = []
-	for file in filestotag:
+	for currentword in filestotag:
+		clean = True
 		try:
-			f = codecs.open(file, encoding="utf-8", errors="strict")
-			for line in f:
-				pass
-			f.close
+			f = codecs.open(currentword, encoding="windows-1252", errors="strict")
 			try:
-				f = codecs.open(file, encoding="windows-1252", errors="strict")
 				for line in f:
 					pass
+			except:
+				clean = False
+			f.close
+			try:
+				f = codecs.open(currentword, encoding="utf-8", errors="strict")
+				try:
+					for line in f:
+						pass
+				except:
+					clean = False
 				f.close
-				newfiles.append(file)
-			except UnicodeDecodeError:
-				print("Skipping " + file + " because it's not Win-1252")
-		except UnicodeDecodeError:
-			print("Skipping " + file + " because it's not UTF-8")
+				if clean ==True:
+					newfiles.append(currentword)
+			except:
+				print("Skipping " + currentword + " because it's not UTF-8")
+		except:
+			print("Skipping " + currentword + " because it's not Win-1252")
 	return newfiles
 
 def sanitize(filestotag):
@@ -107,9 +115,15 @@ else:
 filestotag = sanitize(filestotag)
 filestotag = checkencoding(filestotag)
 if len(filestotag) is 0:
-	print("No files to tag!")
+	print("\nNo files to tag!")
 else:
-	type=input("Type e to paste in existing GLT, or n to build new GLT: ")
+	print("\nFiles to tag:")
+	for file in filestotag:
+		try:
+			print(file)
+		except:
+			filestotag.remove(file)
+	type=input("\nType e to paste in existing GLT, or n to build new GLT: ")
 	if type == "e" or type == "E":
 		tagging = True
 		glt = input("Right-click and paste in GLT: ")
@@ -124,7 +138,7 @@ else:
 		glt = "utm_source=" + source + "&utm_medium=" + medium + "&utm_content=" + content + "&utm_campaign=" + campaign
 		glt = glt.lower()
 	addtargetblank = input("Add target=\"_blank\"? y/n: ")
-	print("Scanning files: hold on a sec!")
+	print("Scanning files: hold tight!")
 	for line in fileinput.input(filestotag, inplace=1, backup=backupmode):
 	    line = re.sub('<a([^>]*)href="([^"\#]*)(\#[^"]*)(\?[^"]*)"','<a\\1href="\\2\\4\\3"', line.rstrip()) # Put section IDs at the end
 	    if removeglt == True:
@@ -138,7 +152,8 @@ else:
     		line = line.rstrip() # If we don't use the rstrip(), we'll add a ton of new lines!
 	    if addtargetblank == "y" or addtargetblank == "Y":
 		    line = re.sub('<a([^>]*)href="([^"]*http[^"]*?[^"]*)">','<a\\1href="\\2" target="_blank">', line.rstrip()) # Append target="_blank"
-	    print(line) # Writes directly to the file
+	    print(line)
+	    #print(line) # Writes directly to the file
 	for file in filestotag:
 		print("Scanned: ", file)
-	print("Done!")
+	print("Done! ", len(filestotag), " files scanned")
