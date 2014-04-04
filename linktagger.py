@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# ^ Note "python3", not "python", because Cygwin currently installs both. You may not need to do this--run "python -V"; if your version is 3+, you can just set the location to /python
+# ^ Update this with your computer's path
 
 import fileinput, re, sys, os, os.path, glob, fnmatch, codecs
 
