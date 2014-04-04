@@ -5,19 +5,23 @@ linktagger.py
 
 This Python script lets you tag files in bulk from the command line, no matter whether you&rsquo;re on Linux, Mac, or Windows. 
 
-Just run it from the terminal (1), name the files you'd like to tag (2), and choose from three optional modes (3): `strip` removes preexisting GLT, `-backup` backs up everything it tags with the extension `.backup`, and `-rf` tags files not only in the target directory but in its subdirectories, too.
+Just run it from the terminal (1), name the files you'd like to tag (2), and choose from three optional modes (3): `-strip` removes preexisting GLT, `-backup` backs up everything it tags with the extension `.backup`, and `-rf` tags files not only in the target directory, but in all its subdirectories, too.
 
 Like this:
 
-![First screenshot](screenshots/1.png)
+![cygwin screenshot](screenshots/1.png)
 
-The cool part is that, even on Windows, linktagger supports Unix-style wildcard expansion and (with `-rf`) iteration through subdirectories. Want to (for some reason) tag not only all the HTML files on your desktop, but also all the HTML files in its subdirectories?
+The cool part is that, even on Windows, linktagger supports Unix-style wildcard expansion and (with `-rf`) iteration through subdirectories. Want to&mdash;for some reason&mdash;tag not only all the HTML files on your desktop, but also all the HTML files in its subdirectories?
 
-![First screenshot](screenshots/3.png)
+![Windows screenshot](screenshots/3.png)
 
 In Unix terminals, put quotation marks around what you&rsquo;re tagging if you&rsquo;re tagging wildcards recursively&mdash;that way the shell won&rsquo;t expand the wildcards before the script can.
 
-![First screenshot](screenshots/2.png)
+![cygwin screenshot](screenshots/2.png)
+
+After that, linktagger will prompt you for GLT parameters and take it from there!
+
+![Mac screenshot](screenshots/4.png)
 
 <strong>linktagger.py knows:</strong>
 * To add GLT before section IDs, not after
@@ -33,3 +37,10 @@ That is, it&rsquo;ll tag, say, this:
 Like this: 
 `<a href="http://www.test.com?siteid=a&utm_source=var1&utm_medium=var2`
 `&utm_content=var3&utm_campaign=var4#contact">`
+
+####Requirements:
+* Python 3+
+* An accurate path to where Python lives: on *nix, run `which python` (or `which python3`) and then update the first line of the script
+* Read/write/execute access to script: on *nix, just cd into the script&rsquo;s directory and run `chmod 777 linktagger.py`
+
+Enjoy!
