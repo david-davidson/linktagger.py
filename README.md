@@ -3,7 +3,7 @@ linktagger.py
 
 ###Tag all your links at once!
 
-This Python script lets you tag files in bulk from the command line, no matter whether you&rsquo;re on Linux, Mac, or Windows. 
+Whether you&rsquo;re on Linux, Mac, or Windows, this Python script lets you tag files in bulk from the command line. 
 
 Just run it from the terminal (1), name the files you'd like to tag (2), and choose from three optional modes (3): `-strip` removes preexisting GLT, `-backup` backs up everything it tags with the extension `.backup`, and `-rf` tags files not only in the target directory, but in all its subdirectories, too.
 
@@ -15,7 +15,7 @@ The cool part is that, even on Windows, linktagger supports Unix-style wildcard 
 
 ![Windows screenshot](screenshots/3.png)
 
-In Unix terminals, put quotation marks around what you&rsquo;re tagging if you&rsquo;re tagging wildcards recursively&mdash;that way the shell won&rsquo;t expand the wildcards before the script can.
+In Unix terminals, put quotation marks around the target files if you&rsquo;re tagging wildcards recursively&mdash;that way the shell won&rsquo;t expand the wildcards before the script can.
 
 ![cygwin screenshot](screenshots/2.png)
 
@@ -39,8 +39,10 @@ Like this:
 `&utm_content=var3&utm_campaign=var4#contact">`
 
 ####Requirements:
-* Python 3+
-* An accurate path to where Python lives: on *nix, run `which python` (or `which python3`) and then update the first line of the script
-* Read/write/execute access to script: on *nix, just cd into the script&rsquo;s directory and run `chmod 777 linktagger.py`
+* Python 3+, which you can get <a href="https://www.python.org/downloads/">here</a>
+* An accurate path to wher Python lives on your machine: on *nix, run `which python` (or, if you&rsquo;re running multiple versions, `which python3`) and then update the first line of the script
+* Read/write/execute access to linktagger.py: on *nix, just cd into the script&rsquo;s directory and run `chmod 777 linktagger.py`
 
-Enjoy!
+<strong>Enjoy!</strong>
+
+P.S. On Linux? Check out linktagger.py&rsquo;s younger sibling, <a href="https://github.com/david-davidson/linkTagger.sh">linktagger.sh</a>
