@@ -39,10 +39,10 @@ Like this:
 `&utm_content=var3&utm_campaign=var4#contact">`
 
 ####Requirements:
-* Python 3+, which you can get <a href="https://www.python.org/downloads/">here</a>
+* Python 3+, which you can get <a href="https://www.python.org/downloads/" target="_blank">here</a>
 * An accurate path to wher Python lives on your machine: on *nix, run `which python` (or, if you&rsquo;re running multiple versions, `which python3`) and then update the first line of the script
 * Read/write/execute access to linktagger.py: on *nix, just cd into the script&rsquo;s directory and run `chmod 777 linktagger.py`
 
 <strong>Enjoy!</strong>
 
-P.S. On Linux? Check out linktagger.py&rsquo;s younger sibling, <a href="https://github.com/david-davidson/linkTagger.sh">linkTagger.sh</a>.
+P.S. On Linux? Check out linktagger.py&rsquo;s younger sibling, <a href="https://github.com/david-davidson/linkTagger.sh" target="_blank">linkTagger.sh</a>.
