@@ -1,0 +1,17 @@
+<!-- This isn't a regular hyperlink; it shouldn't change at all -->
+<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro|Montserrat" rel="stylesheet" type="text/css">
+
+<!-- The following link should be tagged normally; note that it has a class, which should be left undisturbed -->
+Lorem ipsum <a class="firstClass" href="http://www.demo.com/">dolor</a> sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt 
+
+<!-- This previously tagged link shouldn't change (unless, of course, we want target="_blank") -->
+Ut labore et <a href="http://www.demo.com/?utm_source=somewhere#benefits">magna</a> aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
+
+<!-- We should put "benefits" at the end, but add no new tagging -->
+Nisi ut <a href="http://www.demo.com/#benefits?utm_source=somewhere">aliquip</a> ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit 
+
+<!-- These are relative links; they shouldn't change -->
+Esse <a href="#contact">cillum</a> dolore eu <a href="../">fugiat</a> nulla pariatur. 
+
+<!-- Trickiest: we'll want the class, ID, and "href=[URL]", then "?page=1&type=search", then the GLT (preceded by "&"), and finally "#benefits" at the end -->
+Excepteur sint <a class="secondClass" id="important" href="http://www.demo.com/#benefits?page=1&type=search">occaecat</a> cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
