@@ -3,7 +3,7 @@ linktagger.py
 
 ###Tag all your links at once!
 
-This Python lets you tag files in bulk from the command line, no matter whether you&rsquo;re on Linux, Mac, or Windows. 
+This Python script lets you tag files in bulk from the command line, no matter whether you&rsquo;re on Linux, Mac, or Windows. 
 
 Just run it from the terminal (1), name the files you'd like to tag (2), and choose from three optional modes (3): `strip` removes preexisting GLT, `-backup` backs up everything it tags with the extension `.backup`, and `-rf` tags files not only in the target directory but in its subdirectories, too.
 
