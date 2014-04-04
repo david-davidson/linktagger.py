@@ -112,7 +112,7 @@ def printfinalfiles(filestotag):
 # BEGIN USER INTERACTION
 for word in sys.argv:
 	word = word.replace("\"\"", "") # Remove quotation marks, which we only needed to prevent the shell from expanding wildcards
-	if word != __file__: # Don't try to tag the script itself :)
+	if word != __file__:
 		filestotag.append(word) # Create initial list of arguments
 filestotag = checkparameters(filestotag) # Remove and interpret arguments preceded by "-"
 if recursion == True:
@@ -125,7 +125,7 @@ if len(filestotag) is 0:
 	print("\nNo files to tag!")
 else:
 	print("\nFiles to tag:")
-	filestotag = printfinalfiles(filestotag) # Performs final check and prints all files to tag
+	filestotag = printfinalfiles(filestotag) # Perform final check and prints all files to tag
 	type=input("\nType e to paste in existing GLT, or n to build new GLT: ")
 	if type == "e" or type == "E":
 		tagging = True
