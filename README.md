@@ -11,7 +11,7 @@ Like this:
 ![First screenshot](screenshots/1.png)
 
 The cool part is that, even on Windows, linktagger supports Unix-style wildcard expansion and (with `-rf`) iteration through subdirectories. Want to (for some reason) tag not only all the HTML files on your desktop, but also all the HTML files in its subdirectories?
-![First screenshot](screenshots/3.png)
+![First screenshot](screenshots/2.png)
 
 In Unix terminals, put quotation marks around what you&rsquo;re tagging if you&rsquo;re tagging wildcards recursively&mdash;that way the shell won&rsquo;t expand the wildcards before the script can.
 
