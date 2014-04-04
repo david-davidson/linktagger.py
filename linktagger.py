@@ -64,25 +64,25 @@ def checkencoding(filestotag):
 			try:
 				for line in f:
 					pass
-			except:
-				clean = False
-				print("Skipping", currentfile, "because it's unreadable in windows-1252")
-			f.close
-			try:
-				f = codecs.open(currentfile, encoding="utf-8", errors="strict")
 				try:
-					for line in f:
-						pass
+					f = codecs.open(currentfile, encoding="utf-8", errors="strict")
+					try:
+						for line in f:
+							pass
+					except:
+						clean = False
+						print("Skipping", currentfile, "because it's unreadable in utf-8")
 				except:
 					clean = False
-					print("Skipping", currentfile, "because it's unreadable in utf-8")
-				f.close
-				if clean ==True:
-					newfiles.append(currentfile)
+					pass
 			except:
-				pass
+				clean = False
+				print("Skipping", currentfile, "because it's unreadable in windows-1252")		
 		except:
+			clean = False
 			pass
+		if clean == True:
+			newfiles.append(currentfile)
 	return newfiles
 
 def sanitize(filestotag):
