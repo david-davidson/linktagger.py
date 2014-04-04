@@ -10,14 +10,10 @@ Just run it from the terminal (1), name the files you'd like to tag (2), and cho
 Like this:
 ![First screenshot](screenshots/1.png)
 
-Or this:
-![First screenshot](screenshots/2.png)
-
 The cool part is that, even on Windows, linktagger supports Unix-style wildcard expansion and (with `-rf`) iteration through subdirectories. Want to (for some reason) tag not only all the HTML files on your desktop, but also all the HTML files in its subdirectories?
 ![First screenshot](screenshots/3.png)
 
 In Unix terminals, put quotation marks around what you&rsquo;re tagging if you&rsquo;re tagging wildcards recursively&mdash;that way the shell won&rsquo;t expand the wildcards before the script can.
-![First screenshot](screenshots/4.png)
 
 <strong>linktagger.py knows:</strong>
 * To add GLT before section IDs, not after
