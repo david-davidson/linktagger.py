@@ -8,10 +8,12 @@ This Python lets you tag files in bulk from the command line, no matter whether 
 Just run it from the terminal (1), name the files you'd like to tag (2), and choose from three optional modes (3): `strip` removes preexisting GLT, `-backup` backs up everything it tags with the extension `.backup`, and `-rf` tags files not only in the target directory but in its subdirectories, too.
 
 Like this:
-![First screenshot](1.png)
+
+![First screenshot](screenshots/1.png)
 
 The cool part is that, even on Windows, linktagger supports Unix-style wildcard expansion and (with `-rf`) iteration through subdirectories. Want to (for some reason) tag not only all the HTML files on your desktop, but also all the HTML files in its subdirectories?
-![First screenshot](2.png)
+
+![First screenshot](screenshots/2.png)
 
 In Unix terminals, put quotation marks around what you&rsquo;re tagging if you&rsquo;re tagging wildcards recursively&mdash;that way the shell won&rsquo;t expand the wildcards before the script can.
 
