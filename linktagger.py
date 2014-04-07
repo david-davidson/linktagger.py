@@ -32,7 +32,7 @@ no_target_blank = re.compile(r'<a([^>]*)href="([^"]*http[^"]*?[^"]*)">')
 #================
 
 def interpret_parameters(mode):
-	""" Interpret -strip, -backup, etc. """
+	""" Interpret parameters like -strip, -backup, etc. """
 	global recursion
 	global backup_mode
 	global remove_glt
@@ -105,7 +105,7 @@ def sanitize(files_to_tag):
 	return new_files
 
 def print_final_files(files_to_tag):
-	""" Show files to be tagged, and remove files with special character in name """
+	""" Print all files to be tagged, and remove files with special character in name """
 	new_files = []
 	for file in files_to_tag:
 		try:
