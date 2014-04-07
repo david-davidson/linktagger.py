@@ -72,17 +72,18 @@ def expand_wildcards(files_to_tag):
 			wildcard_matches.append(expandedfile)
 	return wildcard_matches
 
+# Remove problem files
 def sanitize(files_to_tag):
 	new_files = []
 	for file in files_to_tag:
 		if os.path.isfile(file):
 			try:
-				with open(file, "r+") as f: # Can we open it?
+				with open(file, "r+") as f: # Can we open it to read and write?
 					try:
-						for line in f: # Can we read through it?
+						for line in f: # Can we loop through it?
 							pass
 						if file.endswith(backup_suffix) is False: # Is it a backup?
-							if os.path.abspath(file) != os.path.abspath(__file__): # Is the the script itself?
+							if os.path.abspath(file) != os.path.abspath(__file__): # Is it the script itself?
 								new_files.append(file) # No? Well then, it's sanitized!
 					except:
 						print("Skipping", file, " because we can't read and write to it")
@@ -102,8 +103,10 @@ def print_final_files(files_to_tag):
 			pass
 	return new_files
 
-
+#========================
 # Begin user interaction:
+#========================
+
 for word in sys.argv:
 	word = word.replace("\"\"", "") # Remove quotation marks, which we only needed to prevent the shell from expanding wildcards
 	files_to_tag.append(word)
