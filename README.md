@@ -9,19 +9,19 @@ Just run it from the terminal (1), specify the files you&rsquo;d like to tag (2)
 
 Like this:
 
-![cygwin screenshot](tree/screenshots/screenshots/1.png)
+![cygwin screenshot](../tree/screenshots/screenshots/1.png)
 
 The cool part is that, even on Windows, linktagger supports Unix-style wildcard expansion and (with `-rf`) iteration through subdirectories. Want to&mdash;for some reason&mdash;tag not only all the HTML files on your desktop, but also all the HTML files in its subdirectories?
 
-![Windows screenshot](tree/screenshots/screenshots/3.png)
+![Windows screenshot](../tree/screenshots/screenshots/3.png)
 
 In Unix terminals, put quotation marks around the target files if you&rsquo;re tagging wildcards recursively&mdash;that way the shell won&rsquo;t expand the wildcards before the script can.
 
-![cygwin screenshot](tree/screenshots/screenshots/2.png)
+![cygwin screenshot](../tree/screenshots/screenshots/2.png)
 
 After that, linktagger will prompt you for GLT parameters and take it from there!
 
-![Mac screenshot](tree/screenshots/screenshots/4.png)
+![Mac screenshot](../tree/screenshots/screenshots/4.png)
 
 <strong>linktagger.py knows:</strong>
 * To add GLT before section IDs, not after
