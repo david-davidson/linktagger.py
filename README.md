@@ -5,7 +5,7 @@ linktagger.py
 
 Whether you&rsquo;re on Linux, Mac, or Windows, this Python script lets you add Google link tagging (GLT) in bulk from the command line. 
 
-Just run it from the terminal (1), specify the files you&rsquo;d like to tag (2), and choose from three optional modes (3): `-strip` removes preexisting GLT, `-backup` backs up everything it tags (with the extension `.backup`), and `-rf` tags files not only in the target directory, but in all its subdirectories, too.
+Just run it from the terminal (1), specify the files you&rsquo;d like to tag (2), and choose from three optional modes (3): `-strip` removes preexisting GLT, `-backup` backs up everything it tags, and `-rf` tags files not only in the target directory, but in all its subdirectories, too.
 
 Like this:
 
