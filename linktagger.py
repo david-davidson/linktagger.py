@@ -93,13 +93,13 @@ def sanitize(files_to_tag):
 								new_files.append(file) # No? Well then, it's sanitized!
 						else:
 							print("Skipping", file, "because it's a backup")
-					except:
+					except Exception:
 						try:
 							print("Skipping", file, "because we can't read and write to it") # Printing certain file *names* throws an exception, too, so we put the print in its own try/except
 							continue
-						except:
+						except Exception:
 							continue
-			except:
+			except Exception:
 				print("Skipping", file, "because we can't access it right now")
 				continue
 	return new_files
@@ -111,7 +111,7 @@ def print_final_files(files_to_tag):
 		try:
 			print(file) 
 			new_files.append(file)
-		except:
+		except Exception:
 			pass # To handle files whose names trigger an exception (but whose content didn't, in sanitize())
 	return new_files
 
