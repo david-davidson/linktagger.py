@@ -80,14 +80,19 @@ def removeextras(filestotag):
 def checkencoding(filestotag):
 	newfiles = []
 	for file in filestotag:
-			with open(file, "r+") as f:
-				try:
-					for line in f:
-						pass
-					newfiles.append(file)
-				except:
-					print("Skipping", file, " because we can't read and write to it")
-					continue
+		if os.path.isfile(file):
+			try:
+				with open(file, "r+") as f:
+					try:
+						for line in f:
+							pass
+						newfiles.append(file)
+					except:
+						print("Skipping", file, " because we can't read and write to it")
+						continue
+			except:
+				print("Skipping", file, " because we can't access it right now")
+				continue
 	return newfiles
 
 def printfinalfiles(filestotag):
