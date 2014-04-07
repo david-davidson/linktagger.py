@@ -15,7 +15,7 @@ The cool part is that, even on Windows, linktagger supports Unix-style wildcard 
 
 ![Windows screenshot](../screenshots/screenshots/3.png)
 
-In Unix terminals, put quotation marks around the target files if you&rsquo;re tagging wildcards recursively&mdash;that way the shell won&rsquo;t expand the wildcards before the script can.
+(In Unix terminals, put quotation marks around the target files if you&rsquo;re tagging wildcards recursively&mdash;that way the shell won&rsquo;t expand the wildcards before the script can.)
 
 ![cygwin screenshot](../screenshots/screenshots/2.png)
 
