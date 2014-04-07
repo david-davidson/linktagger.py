@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# ^ Update this with your computer's path
+# ^ Update this with the path to Python 3 on your machine
 
 import fileinput, re, sys, os, os.path, glob, fnmatch
 
@@ -41,7 +41,7 @@ def checkparameters(filestotag):
 		if file[0] == "-":
 			interpretparameter(file) # Interpret arguments preceded by a hyphen
 		else:
-			newfiles.append(file) # Remove them; they're not files
+			newfiles.append(file)
 	return newfiles
 
 # Expand wildcards through subdirectories
