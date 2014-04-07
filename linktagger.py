@@ -156,39 +156,38 @@ else:
 			    m = re.search(id_before_end, line)
 			    if m:
 			    	changes = True
-			    	line = re.sub(id_before_end,'<a\\1href="\\2\\4\\3"', line.rstrip()) # Put section IDs at the end
+			    	line = re.sub(id_before_end,'<a\\1href="\\2\\4\\3"', line) # Put section IDs at the end
 			    if remove_glt == True:
 			    	m = re.search(has_glt, line)
 			    	if m:
 			    		changes = True
-				    	line = re.sub(has_glt,'', line.rstrip()) # Strip GLT
+				    	line = re.sub(has_glt,'', line) # Strip GLT
 			    if tagging == True:
 			    	m = re.search(has_no_id, line)
 			    	if m:
 			    		changes = True
-			    		line = re.sub(has_no_id,'<a\\1href="\\2?' + glt + '"', line.rstrip()) # Tag links without any section ID
+			    		line = re.sub(has_no_id,'<a\\1href="\\2?' + glt + '"', line) # Tag links without any section ID
 		    		m = re.search(has_id, line)
 		    		if m:
 		    			changes = True
-		    			line = re.sub(has_id,'<a\\1href="\\2?' + glt + '#\\3"', line.rstrip()) # Tag links with section ID, before the ID
+		    			line = re.sub(has_id,'<a\\1href="\\2?' + glt + '#\\3"', line) # Tag links with section ID, before the ID
 	    			m = re.search(has_parameters_has_no_id, line)
 	    			if m:
 	    				changes = True
-	    				line = re.sub(has_parameters_has_no_id,'<a\\1href="\\2\\3&' + glt + '"', line.rstrip()) # Tag links with other parameters (but no GLT) and no section ID
+	    				line = re.sub(has_parameters_has_no_id,'<a\\1href="\\2\\3&' + glt + '"', line) # Tag links with other parameters (but no GLT) and no section ID
 	    			m = re.search(has_parameters_has_id, line)
 	    			if m:
 	    				changes = True
-	    				line = re.sub(has_parameters_has_id,'<a\\1href="\\2\\3&' + glt + '\\4"', line.rstrip())
-			    else:
-				    line = line.rstrip() # Necessary to avoid adding line breaks
+	    				line = re.sub(has_parameters_has_id,'<a\\1href="\\2\\3&' + glt + '\\4"', line)
 			    if add_target_blank == "y" or add_target_blank == "Y":
 			    	m = re.search(no_target_blank, line)
 			    	if m:
 			    		changes = True
-			    		line = re.sub(no_target_blank,'<a\\1href="\\2" target="_blank">', line.rstrip()) # Append target="_blank"
+			    		line = re.sub(no_target_blank,'<a\\1href="\\2" target="_blank">', line) # Append target="_blank"
+			    line = line.rstrip() # Necessary to avoid adding line breaks
 			    print(line) # Prints to file
-			except:
-				continue
+			except Exception:
+				continue # At this point, fail silently
 		if changes == True:
 			tagged_files.append(file)
 	scanned_count = len(files_to_tag)
