@@ -66,7 +66,7 @@ def expandwildcards(filestotag):
 	wildcardmatches = []
 	for file in filestotag:
 		for expandedfile in glob.glob(file):
-			wildcardmatches.append(expandedfile) # Shoot expanded files into the list
+			wildcardmatches.append(expandedfile)
 	return wildcardmatches
 
 def removeextras(filestotag):
