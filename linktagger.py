@@ -1,12 +1,18 @@
 #!/usr/bin/python3
 # ^ Update this with the path to Python 3 on your machine
 
-import fileinput, re, sys, os, os.path, glob, fnmatch
+import fileinput
+import re
+import sys
+import os
+import os.path
+import glob
+import fnmatch
 
 # Set initial variables
 files_to_tag = []
 tagged_files = []
-backup_mode = "" # Default behavior: no backups
+backup_mode = "" # Default behavior: no backups unless user wants thems
 recursion = False
 remove_glt = False
 tagging = False
@@ -25,8 +31,8 @@ no_target_blank = re.compile(r'<a([^>]*)href="([^"]*http[^"]*?[^"]*)">')
 # Begin functions
 #================
 
-# Interpret parameters
 def interpret_parameters(mode):
+	""" Interpret -strip, -backup, etc. """
 	global recursion
 	global backup_mode
 	global remove_glt
@@ -37,24 +43,24 @@ def interpret_parameters(mode):
 	if mode == "-strip":
 		remove_glt = True
 
-# Remove parameters
 def check_parameters(files_to_tag):
+	""" Check for -strip, -backup, etc. """
 	new_files = []
 	for file in files_to_tag:
 		if file[0] == "-":
-			interpret_parameters(file) # Interpret arguments preceded by a hyphen
+			interpret_parameters(file)
 		else:
-			new_files.append(file) # And treat other arguments as files to be tagged
+			new_files.append(file)
 	return new_files
 
-# Expand wildcards through subdirectories
 def expand_recursively(files_to_tag):
+	""" Expand wildcards through subdirectories """
 	recursive_matches = []
 	for file in files_to_tag:
 		if file.find(os.path.sep) != -1: # If the path separator is present, split on the rightmost occurrence
 			split = file.rsplit(os.path.sep, 1)
-			path = split[0] # Set path aside for later
-			file = split[1] # Trim file to version without path
+			path = split[0]
+			file = split[1]
 		else:
 			path = "."
 		for root, dirnames, filenames in os.walk(path):
@@ -64,16 +70,16 @@ def expand_recursively(files_to_tag):
 				recursive_matches.append(os.path.join(root, filename))
 	return recursive_matches
 
-# Expand wildcards in current working directory
 def expand_wildcards(files_to_tag):
+	""" Expand wildcards in current working directory only """
 	wildcard_matches = []
 	for file in files_to_tag:
 		for expandedfile in glob.glob(file):
 			wildcard_matches.append(expandedfile)
 	return wildcard_matches
 
-# Remove problem files
 def sanitize(files_to_tag):
+	""" Remove problematic files """
 	new_files = []
 	for file in files_to_tag:
 		if os.path.isfile(file):
@@ -85,22 +91,28 @@ def sanitize(files_to_tag):
 						if file.endswith(backup_suffix) is False: # Is it a backup?
 							if os.path.abspath(file) != os.path.abspath(__file__): # Is it the script itself?
 								new_files.append(file) # No? Well then, it's sanitized!
+						else:
+							print("Skipping", file, "because it's a backup")
 					except:
-						print("Skipping", file, " because we can't read and write to it")
-						continue
+						try:
+							print("Skipping", file, "because we can't read and write to it") # Printing certain file *names* throws an exception, too, so we put the print in its own try/except
+							continue
+						except:
+							continue
 			except:
-				print("Skipping", file, " because we can't access it right now")
+				print("Skipping", file, "because we can't access it right now")
 				continue
 	return new_files
 
 def print_final_files(files_to_tag):
+	""" Show files to be tagged, and remove files with special character in name """
 	new_files = []
 	for file in files_to_tag:
 		try:
-			print(file) # Docs that include weird characters in the name--but not the body--can still trigger an exception; remove them, too.
+			print(file) 
 			new_files.append(file)
 		except:
-			pass
+			pass # To handle files whose names trigger an exception (but whose content didn't, in sanitize())
 	return new_files
 
 #========================
@@ -108,7 +120,7 @@ def print_final_files(files_to_tag):
 #========================
 
 for word in sys.argv:
-	word = word.replace("\"\"", "") # Remove quotation marks, which we only needed to prevent the shell from expanding wildcards
+	word = word.replace("\"\"", "") # Remove quotation marks
 	files_to_tag.append(word)
 files_to_tag = check_parameters(files_to_tag) # Remove and interpret arguments preceded by "-"
 if recursion == True:
@@ -121,7 +133,7 @@ if len(files_to_tag) is 0:
 else:
 	print("\nMatching files:")
 	files_to_tag = print_final_files(files_to_tag) # Perform final check and print all files to tag
-	type=input("\nType e to paste in existing GLT, or n to build new GLT: ")
+	type = input("\nType e to paste in existing GLT, or n to build new GLT: ")
 	if type == "e" or type == "E":
 		tagging = True
 		glt = input("Right-click and paste in GLT: ")
@@ -144,7 +156,7 @@ else:
 			    m = re.search(id_before_end, line)
 			    if m:
 			    	changes = True
-			    line = re.sub(id_before_end,'<a\\1href="\\2\\4\\3"', line.rstrip()) # Put section IDs at the end
+			    	line = re.sub(id_before_end,'<a\\1href="\\2\\4\\3"', line.rstrip()) # Put section IDs at the end
 			    if remove_glt == True:
 			    	m = re.search(has_glt, line)
 			    	if m:
@@ -167,6 +179,8 @@ else:
 	    			if m:
 	    				changes = True
 	    				line = re.sub(has_parameters_has_id,'<a\\1href="\\2\\3&' + glt + '\\4"', line.rstrip())
+			    else:
+				    line = line.rstrip() # Necessary to avoid adding line breaks
 			    if add_target_blank == "y" or add_target_blank == "Y":
 			    	m = re.search(no_target_blank, line)
 			    	if m:
