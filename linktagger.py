@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # ^ Update this with the path to Python 3 on your machine
+# Test comment
 
 import fileinput
 import re
@@ -123,7 +124,7 @@ for word in sys.argv:
 	word = word.replace("\"\"", "") # Remove quotation marks
 	files_to_tag.append(word)
 files_to_tag = check_parameters(files_to_tag) # Remove and interpret arguments preceded by "-"
-if recursion == True:
+if recursion:
 	files_to_tag = expand_recursively(files_to_tag)
 else:
 	files_to_tag = expand_wildcards(files_to_tag)
@@ -157,12 +158,12 @@ else:
 			    if m:
 			    	changes = True
 			    	line = re.sub(id_before_end,'<a\\1href="\\2\\4\\3"', line) # Put section IDs at the end
-			    if remove_glt == True:
+			    if remove_glt:
 			    	m = re.search(has_glt, line)
 			    	if m:
 			    		changes = True
 				    	line = re.sub(has_glt,'', line) # Strip GLT
-			    if tagging == True:
+			    if tagging:
 			    	m = re.search(has_no_id, line)
 			    	if m:
 			    		changes = True
@@ -188,7 +189,8 @@ else:
 			    print(line) # Prints to file
 			except Exception:
 				continue # At this point, fail silently
-		if changes == True:
+		if changes:
+			print("Edited:", file)
 			tagged_files.append(file)
 	scanned_count = len(files_to_tag)
 	tagged_count = len(tagged_files)
@@ -200,6 +202,4 @@ else:
 		tagged_ref = "file"
 	else:
 		tagged_ref = "files"
-	for file in tagged_files:
-		print("Tagged:", file)
-	print("Done!", scanned_count, scanned_ref, "scanned;", tagged_count, tagged_ref, "changed.")
+	print("\nDone!", scanned_count, scanned_ref, "scanned;", tagged_count, tagged_ref, "edited.")
