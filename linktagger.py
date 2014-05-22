@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 # ^ Update this with the path to Python 3 on your machine
-# Test comment
 
 import fileinput
 import re
@@ -26,11 +25,9 @@ has_no_id = re.compile(r'<a([^>]*)href="([^"]*http[^#?"]*?)"')
 has_id = re.compile(r'<a([^>]*)href="([^"]*http[^#?"]*?)#([^\"]*?)"')
 has_parameters_has_no_id = re.compile(r'<a([^>]*)href="([^"]*http[^#?"]*?)(\?(?![^#"]*?utm_)[^#"]*?)"')
 has_parameters_has_id = re.compile(r'<a([^>]*)href="([^"]*http[^#?"]*?)(\?(?!.*?utm_).*?)(#*[^#"]*)"')
-no_target_blank = re.compile(r'<a([^>]*)href="([^"]*http[^"]*?[^"]*)">')
+no_target_blank = re.compile(r'<a((?!.*?_blank).*?)href="([^"]*http[^"]*?[^"]*)">')
 
-#================
-# Begin functions
-#================
+# Define functions
 
 def interpret_parameters(mode):
 	""" Interpret parameters like -strip, -backup, etc. """
@@ -116,9 +113,7 @@ def print_final_files(files_to_tag):
 			pass # To handle files whose names trigger an exception (but whose content didn't, in sanitize())
 	return new_files
 
-#========================
 # Begin user interaction:
-#========================
 
 for word in sys.argv:
 	word = word.replace("\"\"", "") # Remove quotation marks
