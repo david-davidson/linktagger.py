@@ -25,8 +25,7 @@ has_no_id = re.compile(r'<a([^>]*)href="([^"]*http[^#?"]*?)"')
 has_id = re.compile(r'<a([^>]*)href="([^"]*http[^#?"]*?)#([^\"]*?)"')
 has_parameters_has_no_id = re.compile(r'<a([^>]*)href="([^"]*http[^#?"]*?)(\?(?![^#"]*?utm_)[^#"]*?)"')
 has_parameters_has_id = re.compile(r'<a([^>]*)href="([^"]*http[^#?"]*?)(\?(?!.*?utm_).*?)(#*[^#"]*)"')
-no_target_blank = re.compile(r'<a(.*?(?!.*?_blank)?)href="([^"]*http[^"]*?[^"]*)">') # This works, but it's incredibly slow!
-
+no_target_blank = re.compile(r'<a(.(?!_blank))*?href="([^"]*http[^"]*?[^"]*)">')
 # Define functions
 
 def interpret_parameters(mode):
