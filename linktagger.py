@@ -179,8 +179,7 @@ else:
 			    	if m:
 			    		changes = True
 			    		line = re.sub(no_target_blank,'<a\\1href="\\2" target="_blank">', line) # Append target="_blank"
-			    line = line.rstrip() # Necessary to avoid adding line breaks
-			    print(line) # Prints to file
+			    sys.stdout.write(line) # Prints to file
 			except Exception:
 				continue # At this point, fail silently
 		if changes:
